@@ -11,7 +11,7 @@
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
   </head>
-  <body ng-app="movietimeplusApp" ng-controller="MainCtrl">
+  <body ng-app="movietimeplusApp">
 
 <!-- HEADER AND NAVBAR -->
     <div class="header">
@@ -49,6 +49,7 @@
 
 <!-- MAIN CONTENT AND INJECTED VIEWS -->
     <div class="container">
+      <!-- <div ng-include="'/main.html'"></div> -->
       <div ng-view=""></div>
     </div>
 
@@ -60,6 +61,11 @@
       </div>
     </div>
 
+<!-- Since we are not using a local web server, templates must be placed into index.html to be then loaded into $templateCache so that it can be used by ng-view -->
+    <script id="/main.html" type="text/ng-template">
+      <h3>Main view</h3>
+    </script>
+
 <!-- load app.js, AngularJS, and dependencies -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
@@ -68,9 +74,10 @@
     <script src="bower_components/angular-cookies/angular-cookies.js"></script>
     <script src="bower_components/angular-messages/angular-messages.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
-    <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-touch/angular-touch.js"></script>
     <script src="app/scripts/app.js"></script>
+    <script src="app/scripts/controllers/main.js"></script>
   </body>
 </html>

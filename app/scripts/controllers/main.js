@@ -6,4 +6,5 @@ angular.module('movietimeplusApp')
       'AngularJS',
       'Karma'
     ];
+    console.log('Im here');
   }]);
