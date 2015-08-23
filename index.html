@@ -71,7 +71,7 @@
         <form class="form-horizontal">
           <div class="panel-body">
             <div class="well">
-              <div class="form-group form-group-large">
+              <div class="form-group">
                 <label class="col-sm-1 control-label" for="emailInput">Email:
                 </label>
                 <div class="input-group input-group-lg col-sm-10">
@@ -83,11 +83,24 @@
           </div>
           <div class="panel-body">
             <div class="well">
-              <div class="form-group form-group-large">
-                <label class="col-sm-1 control-label" for="timeInput">Time:
-                </label>
-                <div class="input-group input-group-lg col-sm-10">
-                  <input class="form-control" id="timeInput" ng-model="timeHourMin" placeholder="12 hours 15 minutes" type="text">
+              <div class="form-inline">
+                <div class="form-group">
+                  <label class="control-label col-sm-3">Work Start:</label>
+                  <div class="col-sm-4">
+                    <timepicker hour-step="hStartstep" minute-step="mStartstep" ng-change="startTimeChanged()" ng-model="startTime" show-meridian="true"></timepicker>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-sm-3">Work Finish:</label>
+                  <div class="col-sm-4">
+                    <timepicker hour-step="hFinishstep" minute-step="mFinishstep" ng-change="finishTimeChanged()" ng-model="finishTime" show-meridian="true"></timepicker>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-sm-3">Time Logged:</label>
+                  <div class="col-sm-8">
+                    <p class="form-control-static"><big>The time that you have selected is: {{displayDateTime}}</big></p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -120,10 +133,9 @@
         <div class="panel-footer">
           <div aria-label="..." class="btn-group btn-group-justified" role="group">
             <div class="btn-group" role="group">
-              <button class="btn btn-default btn-lg" type="button">Clear</button>
+              <button class="btn btn-default btn-lg" ng-click="resetForm()" type="button">Clear</button>
             </div>
-            <div class="btn-group" role="group">
-            </div>
+            <div class="btn-group" role="group"></div>
             <div class="btn-group" role="group">
               <button class="btn btn-default btn-lg" type="button">Next</button>
             </div>
@@ -136,6 +148,7 @@
       <script src="bower_components/angular/angular.js"></script>
       <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
       <script src="bower_components/angular-animate/angular-animate.js"></script>
+      <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
       <script src="bower_components/angular-cookies/angular-cookies.js"></script>
       <script src="bower_components/angular-messages/angular-messages.js"></script>
       <script src="bower_components/angular-resource/angular-resource.js"></script>
@@ -144,5 +157,6 @@
       <script src="bower_components/angular-touch/angular-touch.js"></script>
       <script src="app/scripts/app.js"></script>
       <script src="app/scripts/controllers/main.js"></script>
+      <script src="app/scripts/services/time-service.js"></script>
     </body>
   </html>
