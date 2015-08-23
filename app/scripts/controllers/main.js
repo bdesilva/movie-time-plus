@@ -1,5 +1,5 @@
 angular.module('movietimeplusApp')
-  .controller('MainCtrl', ['$scope', 'TimeService', function($scope, TimeService) {
+  .controller('MainCtrl', ['$scope', 'TimeService', '$activityIndicator', '$timeout', function($scope, TimeService, $activityIndicator, $timeout) {
     //Variables and Initialization
     var clearForm = function() {
       $scope.startTime = new Date();
@@ -10,7 +10,7 @@ angular.module('movietimeplusApp')
       $scope.hFinishstep = 1;
       $scope.mFinishstep = 15;
       $scope.message = '';
-      $scope.displayDateTime = '12 hours 15 minutes';
+      $scope.displayDateTime = '0 hours 0 minutes';
       $scope.workItems = [{
         workType: 'Feature Item',
         workItem: 'Time working on visual effects for movie'
@@ -24,6 +24,11 @@ angular.module('movietimeplusApp')
     };
 
     clearForm();
+
+    $activityIndicator.startAnimating();
+		$timeout(function () {
+			$activityIndicator.stopAnimating();
+		}, 3000);
 
     //Functions
     $scope.resetForm = function() {

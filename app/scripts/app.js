@@ -7,7 +7,8 @@ angular
     'ngRoute',
     'ngSanitize',
     'ngTouch',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'ngActivityIndicator'
   ])
   .config(['$routeProvider', function($routeProvider) {
     $routeProvider
