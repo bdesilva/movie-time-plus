@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport">
     <title>Movie Time Plus</title>
 <!-- load bootstrap, fontawesome, and site.css -->
     <link href="app/styles/site.css" rel="stylesheet">
@@ -16,7 +16,7 @@
 <!-- HEADER AND NAVBAR -->
     <div class="header">
       <nav class="navbar navbar-default" role="navigation">
-        <div class="container">
+        <div class="container-fluid">
           <div class="navbar-header">
 
             <button class="navbar-toggle collapsed" data-target="#js-navbar-collapse" data-toggle="collapse" type="button">
@@ -48,13 +48,13 @@
     </div>
 
 <!-- MAIN CONTENT AND INJECTED VIEWS -->
-    <div class="container">
-      <!-- <div ng-include="'/main.html'"></div> -->
+    <div class="container-fluid">
+<!-- <div ng-include="'/main.html'"></div> -->
       <div ng-view=""></div>
     </div>
 
     <div class="footer">
-      <div class="container">
+      <div class="container-fluid">
         <p>
           <span class="glyphicon glyphicon-heart"></span>
           MovieTimePlus Inc.</p>
@@ -62,22 +62,87 @@
     </div>
 
 <!-- Since we are not using a local web server, templates must be placed into index.html to be then loaded into $templateCache so that it can be used by ng-view -->
+<!-- NOTE: It would have been nice to include HTML imports such as <link rel="import" href="/path/to/imports/stuff.html"> in order to perform separation of concerns with views in different folders, but Chrome only supports it after enabling this in chrome://flags, so I stuck to in-line templates within the index.html file. However, in a real-world scenario I would be using a web server to avoid this limitation. -->
     <script id="/main.html" type="text/ng-template">
-      <h3>Main view</h3>
-    </script>
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h1 class="panel-title">Submit Timesheet</h1>
+        </div>
+        <form class="form-horizontal">
+          <div class="panel-body">
+            <div class="well">
+              <div class="form-group form-group-large">
+                <label class="col-sm-1 control-label" for="emailInput">Email:
+                </label>
+                <div class="input-group input-group-lg col-sm-10">
+                  <input aria-describedby="basic-addon2" class="form-control" id="emailInput" ng-model="email" placeholder="artist" type="text">
+                  <span class="input-group-addon" id="basic-addon2">@gener8.com</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="well">
+              <div class="form-group form-group-large">
+                <label class="col-sm-1 control-label" for="timeInput">Time:
+                </label>
+                <div class="input-group input-group-lg col-sm-10">
+                  <input class="form-control" id="timeInput" ng-model="timeHourMin" placeholder="12 hours 15 minutes" type="text">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="well well-lg">
+              <div class="form-group form-group-large">
+                <label class="control-label col-sm-1" for="messageInput">Message (optional):
+                </label>
+                <div class="col-sm-10">
+                  <textarea class="form-control" cols="40" id="messageInput" ng-model="message" placeholder="Designed 3D platform for next Jurassic Park movie." rows="8"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="well well-lg">
+              <h4 class="work-type-header">What type of work is this for?</h4>
+              <ul class="list-group">
+                <li class="list-group-item" ng-repeat="item in workItems">
+                  <a class="list-group-item" href="" ng-class="{'active': $first}">
+                    <h4 class="list-group-item-heading">{{item.workType}}</h4>
+                    <p class="list-group-item-text">{{item.workItem}}</p>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </form>
+        <div class="panel-footer">
+          <div aria-label="..." class="btn-group btn-group-justified" role="group">
+            <div class="btn-group" role="group">
+              <button class="btn btn-default btn-lg" type="button">Clear</button>
+            </div>
+            <div class="btn-group" role="group">
+            </div>
+            <div class="btn-group" role="group">
+              <button class="btn btn-default btn-lg" type="button">Next</button>
+            </div>
+          </div>
+        </div>
+      </script>
 
 <!-- load app.js, AngularJS, and dependencies -->
-    <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="bower_components/angular-animate/angular-animate.js"></script>
-    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-    <script src="bower_components/angular-messages/angular-messages.js"></script>
-    <script src="bower_components/angular-resource/angular-resource.js"></script>
-    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-    <script src="bower_components/angular-route/angular-route.js"></script>
-    <script src="bower_components/angular-touch/angular-touch.js"></script>
-    <script src="app/scripts/app.js"></script>
-    <script src="app/scripts/controllers/main.js"></script>
-  </body>
-</html>
+      <script src="bower_components/jquery/dist/jquery.js"></script>
+      <script src="bower_components/angular/angular.js"></script>
+      <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+      <script src="bower_components/angular-animate/angular-animate.js"></script>
+      <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+      <script src="bower_components/angular-messages/angular-messages.js"></script>
+      <script src="bower_components/angular-resource/angular-resource.js"></script>
+      <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+      <script src="bower_components/angular-route/angular-route.js"></script>
+      <script src="bower_components/angular-touch/angular-touch.js"></script>
+      <script src="app/scripts/app.js"></script>
+      <script src="app/scripts/controllers/main.js"></script>
+    </body>
+  </html>
