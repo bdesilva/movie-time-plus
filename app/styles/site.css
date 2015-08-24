@@ -1,4 +1,5 @@
 body {
+  background-color: darkslateblue !important;
   padding: 0;
 }
 .footer {
@@ -13,6 +14,7 @@ body {
   border-width: 2.5px !important;
 }
 .panel-body {
+  background-color: lightsteelblue !important;
   padding-bottom: 0px !important;
 }
 .work-type-header {
@@ -24,36 +26,9 @@ body {
   color:red;
 }
 
-/*.overlay {
-    position:absolute;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-    background-color:rgba(0, 0, 0, 0.85);
-    z-index:9999;
-    color:white;
+.footer-logo {
+  color: lightgrey;
 }
-
-.overlay {
-    text-align: center;
-}
-
-.overlay:before {
-    content: '';
-    display: inline-block;
-    height: 100%;
-    vertical-align: middle;
-    margin-right: -0.25em;
-}
-
-.txt {
-    display: inline-block;
-    vertical-align: middle;
-    padding: 10px 15px;
-    position:relative;
-    font-weight:bold;
-}*/
 
 /* Responsive: Mobile, Portrait tablets and up */
 

@@ -1,2 +1,2 @@
 # movietimeplus
-A simple time tracker for movie theatre employees
+A simple time tracker for gener8 employees working on a movie.

@@ -1,6 +1,6 @@
 angular.module('movietimeplusApp')
-  .controller('MainCtrl', ['$scope', 'TimeService', 'ShareDataService', '$activityIndicator', '$timeout', '$location', '$log',
-    function($scope, TimeService, ShareDataService, $activityIndicator, $timeout, $location, $log) {
+  .controller('MainCtrl', ['$scope', 'TimeService', 'ShareDataService', '$activityIndicator', '$timeout', '$location', '$log', '$modal',
+    function($scope, TimeService, ShareDataService, $activityIndicator, $timeout, $location, $log, $modal) {
       //Variables and Initialization
       var clearForm = function() {
         $scope.email = '';
@@ -11,6 +11,8 @@ angular.module('movietimeplusApp')
         $scope.mFinishstep = 15;
         $scope.timeInitalValCheck = false
         $scope.selectedId = null;
+        $scope.selectedWorkItem = {};
+        ShareDataService.clearData();
 
         $scope.startTime = new Date();
         $scope.finishTime = new Date();
@@ -50,7 +52,13 @@ angular.module('movietimeplusApp')
 
       $scope.submitForm = function() {
         if ($scope.timeSheetForm.$valid) {
-          ShareDataService.addData({email: $scope.email + '@gener8.com', timeLogged: $scope.displayDateTime.display, message: $scope.message});
+          console.log($scope.message);
+          ShareDataService.addData({
+            email: $scope.email + '@gener8.com',
+            timeLogged: $scope.displayDateTime.display,
+            message: $scope.message,
+            workType: $scope.selectedWorkItem
+          });
 
           $activityIndicator.startAnimating();
           $timeout(function() {
@@ -73,8 +81,74 @@ angular.module('movietimeplusApp')
           });
       };
 
+      $scope.openCustomWorkTypeModal = function() {
+        var modalInstance = $modal.open({
+          animation: true,
+          templateUrl: 'addCustomWorkType.html',
+          controller: 'CustomWorkTypeCtrl',
+          size: 'lg',
+          resolve: {
+            items: function() {
+              return $scope.workItems;
+            },
+            selectedId: function() {
+              return $scope.selectedId;
+            },
+            selectWorkType: function() {
+              return $scope.selectWorkType;
+            }
+          }
+        });
+      };
+
       $scope.selectWorkType = function(item) {
         $scope.selectedId = item.$$hashKey;
+        $scope.selectedWorkItem = {
+          workType: item.workType,
+          workItem: item.workItem
+        };
+        if ($scope.selectedWorkItem.workType.toLowerCase().indexOf('other') !== -1) {
+          $scope.openCustomWorkTypeModal();
+        }
       };
     }
   ]);
+
+angular.module('movietimeplusApp').controller('CustomWorkTypeCtrl', function($scope, $modalInstance, items, selectedId, selectWorkType) {
+  $scope.customWorkType = '';
+  $scope.customWorkItem = '';
+
+  function functiontofindIndexByKeyValue(arraytosearch, key, valuetosearch) {
+    for (var i = 0; i < arraytosearch.length; i++) {
+      if (arraytosearch[i][key] == valuetosearch) {
+        return i;
+      }
+    }
+    return null;
+  }
+
+  $scope.ok = function() {
+    var index = functiontofindIndexByKeyValue(items, "$$hashKey", selectedId);
+    if (index > -1) {
+      items.splice(index, 1);
+    }
+
+    items.push({
+      workType: $scope.customWorkType,
+      workItem: $scope.customWorkItem,
+      $$hashKey: selectedId
+    });
+
+    selectWorkType({
+      workType: $scope.customWorkType,
+      workItem: $scope.customWorkItem,
+      $$hashKey: selectedId
+    });
+
+    $modalInstance.close();
+  };
+
+  $scope.cancel = function() {
+    $modalInstance.dismiss('cancel');
+  };
+});

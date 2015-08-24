@@ -1,14 +1,14 @@
 angular.module('movietimeplusApp')
   .service('ShareDataService', ['$q', function($q) {
-    var deferred = $q.defer();
     var dataObject = {};
 
     var addData = function(newData) {
       dataObject = newData;
-    }
+    };
 
     var getData = function() {
-      if (dataObject.email || dataObject.timeLogged || dataObject.message) {
+      var deferred = $q.defer();
+      if (dataObject.email || dataObject.timeLogged) {
         deferred.resolve(dataObject);
       } else {
         deferred.reject({
@@ -16,10 +16,15 @@ angular.module('movietimeplusApp')
         });
       }
       return deferred.promise;
-    }
+    };
+
+    var clearData = function() {
+      dataObject = {};
+    };
 
     return {
       addData: addData,
-      getData: getData
+      getData: getData,
+      clearData: clearData
     };
   }]);

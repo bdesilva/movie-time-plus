@@ -38,10 +38,7 @@
                 <a href="#/">Home</a>
               </li>
               <li>
-                <a ng-href="#/about">About</a>
-              </li>
-              <li>
-                <a ng-href="#/">Contact</a>
+                <a ng-href="#/">Admin (Coming soon)</a>
               </li>
             </ul>
           </div>
@@ -58,7 +55,7 @@
 
     <div class="footer">
       <div class="container-fluid">
-        <p>
+        <p class="footer-logo">
           <span class="glyphicon glyphicon-heart"></span>
           MovieTimePlus Inc.</p>
       </div>
@@ -80,7 +77,7 @@
                 <label class="col-sm-1 control-label" for="emailInput">Email:
                 </label>
                 <div class="input-group input-group-lg col-sm-10">
-                  <input aria-describedby="basic-addon2" class="form-control" id="emailInput" name="email" ng-maxlength="30" ng-minlength="3" ng-model="email" placeholder="artist" required type="text" />
+                  <input aria-describedby="basic-addon2" class="form-control" id="emailInput" name="email" ng-maxlength="30" ng-minlength="3" ng-model="email" placeholder="artist" required type="text"/>
                   <span class="input-group-addon" id="basic-addon2">@gener8.com</span>
                 </div>
                 <div class="help-block" ng-if="timeSheetForm.email.$touched" ng-messages="timeSheetForm.email.$error">
@@ -107,12 +104,12 @@
                 <div class="form-group">
                   <label class="control-label col-sm-3">Time Logged:</label>
                   <div class="col-sm-8" ng-class="{ 'has-error': timeInitalValCheck && timeSheetForm.validateTime.$error }">
-                    <input ng-model="validateTime" name="validateTime" type="time" ng-hide="true" timevalidate/>
+                    <input name="validateTime" ng-hide="true" ng-model="validateTime" timevalidate type="time"/>
                     <p class="form-control-static">
                       <big>The time that you have selected is:
                         {{displayDateTime.display}}</big>
                     </p>
-                    <div class="help-block" ng-show="timeInitalValCheck" ng-messages="timeSheetForm.validateTime.$error">
+                    <div class="help-block" ng-messages="timeSheetForm.validateTime.$error" ng-show="timeInitalValCheck">
                       <div ng-messages-include="messages.html"></div>
                     </div>
                   </div>
@@ -136,7 +133,7 @@
               <h4 class="work-type-header">What type of work is this for?</h4>
               <ul class="list-group">
                 <li class="list-group-item" ng-repeat="item in workItems">
-                  <a class="list-group-item" href="" ng-click="selectWorkType(item)" ng-class="{'active': selectedId === item.$$hashKey}">
+                  <a class="list-group-item" href="" ng-class="{'active': selectedId === item.$$hashKey}" ng-click="selectWorkType(item)">
                     <h4 class="list-group-item-heading">{{item.workType}}</h4>
                     <p class="list-group-item-text">{{item.workItem}}</p>
                   </a>
@@ -165,51 +162,101 @@
             <h1 class="panel-title">Timesheet Submitted</h1>
           </div>
           <div class="panel-body">
-            <div class="well well-lg">
-              <p class="form-control-static">
-                <big>Thank you <strong>{{thankyouMessage}}</strong></big>
-              </p>
-              <p class="form-control-static">
-                <big>{{timeLoggedMessage}}</big>
-              </p>
+            <div class="jumbotron">
+              <h1>{{workType}}</h1>
+              <p>{{workItem}}</p>
+              <div class="well well-lg">
+                <p class="form-control-static">
+                  <big>Thank you
+                    <strong>{{thankyouMessage}}</strong>
+                  </big>
+                </p>
+                <p class="form-control-static">
+                  <big>{{timeLoggedMessage}}</big>
+                </p>
+              </div>
+            </div>
+            <div class="panel-body" ng-show="showOptions">
+              <div class="well well-lg">
+                <p class="form-control-static">
+                  <big>
+                    <strong>Your comments:
+                    </strong>{{message}}</big>
+                </p>
+              </div>
             </div>
           </div>
           <div class="panel-footer">
             <div aria-label="..." class="btn-group btn-group-justified" role="group">
+              <div class="btn-group" role="group"></div>
               <div class="btn-group" role="group">
-                <button class="btn btn-default btn-lg" ng-click="resetForm()" type="button">Start Again</button>
+                <button class="btn btn-default btn-lg" ng-click="startAgain()" type="button">Start Again</button>
               </div>
+              <div class="btn-group" role="group"></div>
             </div>
           </div>
         </div>
       </script>
 
+      <script id="addCustomWorkType.html" type="text/ng-template">
+        <div class="modal-header">
+          <h3 class="modal-title">Enter custom work item</h3>
+        </div>
+        <div class="panel-body">
+          <div class="well">
+            <div class="form-group">
+              <label class="control-label" for="workTypeInput">Work Type:
+              </label>
+              <div class="input-group input-group-lg">
+                <input aria-describedby="basic-addon2" class="form-control" id="workTypeInput" ng-model="customWorkType" placeholder="Custom work type..." type="text"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="well">
+            <div class="form-group">
+              <label class="control-label" for="workItemInput">Work Item:
+              </label>
+              <div class="input-group input-group-lg">
+                <input aria-describedby="basic-addon2" class="form-control" id="workItemInput" ng-model="customWorkItem" placeholder="Custom work item..." type="text"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()" type="button">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()" type="button">Cancel</button>
+      </div>
+    </script>
+
 <!-- Ng Messages -->
-      <script id="messages.html" type="text/ng-template">
-        <p ng-message="minlength">Your email prefix is too short.</p>
-        <p ng-message="maxlength">Your email prefix is too long.</p>
-        <p ng-message="required">Your email prefix is required.</p>
-        <p ng-message="timevalidate">You time logged cannot be zero hours and zero minutes!</p>
-      </script>
+    <script id="messages.html" type="text/ng-template">
+      <p ng-message="minlength">Your email prefix is too short.</p>
+      <p ng-message="maxlength">Your email prefix is too long.</p>
+      <p ng-message="required">Your email prefix is required.</p>
+      <p ng-message="timevalidate">You time logged cannot be zero hours and zero minutes!</p>
+    </script>
 
 <!-- load app.js, AngularJS, and dependencies -->
-      <script src="bower_components/jquery/dist/jquery.js"></script>
-      <script src="bower_components/angular/angular.js"></script>
-      <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-      <script src="bower_components/angular-animate/angular-animate.js"></script>
-      <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-      <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-      <script src="bower_components/angular-messages/angular-messages.js"></script>
-      <script src="bower_components/angular-resource/angular-resource.js"></script>
-      <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-      <script src="bower_components/angular-route/angular-route.js"></script>
-      <script src="bower_components/angular-touch/angular-touch.js"></script>
-      <script src="bower_components/ngActivityIndicator/ngActivityIndicator.min.js"></script>
-      <script src="app/scripts/app.js"></script>
-      <script src="app/scripts/controllers/main.js"></script>
-      <script src="app/scripts/controllers/submitted.js"></script>
-      <script src="app/scripts/services/time-service.js"></script>
-      <script src="app/scripts/services/share-data-service.js"></script>
-      <script src="app/scripts/directives/time-log-validators.js"></script>
-    </body>
-  </html>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-messages/angular-messages.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-touch/angular-touch.js"></script>
+    <script src="bower_components/ngActivityIndicator/ngActivityIndicator.min.js"></script>
+    <script src="app/scripts/app.js"></script>
+    <script src="app/scripts/controllers/main.js"></script>
+    <script src="app/scripts/controllers/submitted.js"></script>
+    <script src="app/scripts/services/time-service.js"></script>
+    <script src="app/scripts/services/share-data-service.js"></script>
+    <script src="app/scripts/directives/time-log-validators.js"></script>
+  </body>
+</html>
