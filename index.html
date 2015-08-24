@@ -7,6 +7,7 @@
     <title>Movie Time Plus</title>
 <!-- load bootstrap, fontawesome, and site.css -->
     <link href="app/styles/site.css" rel="stylesheet">
+    <link href="app/styles/spinner-overlay.css" rel="stylesheet">
     <link href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
@@ -51,7 +52,7 @@
 <!-- MAIN CONTENT AND INJECTED VIEWS -->
     <div class="container-fluid">
 <!-- <div ng-include="'/main.html'"></div> -->
-      <div ng-show="AILoading" class="loading"></div>
+      <div class="loading" ng-show="AILoading"></div>
       <div ng-view=""></div>
     </div>
 
@@ -65,20 +66,25 @@
 
 <!-- Since we are not using a local web server, templates must be placed into index.html to be then loaded into $templateCache so that it can be used by ng-view -->
 <!-- NOTE: It would have been nice to include HTML imports such as <link rel="import" href="/path/to/imports/stuff.html"> in order to perform separation of concerns with views in different folders, but Chrome only supports it after enabling this in chrome://flags, so I stuck to in-line templates within the index.html file. However, in a real-world scenario I would be using a web server to avoid this limitation. -->
+
+<!-- Main View -->
     <script id="/main.html" type="text/ng-template">
       <div class="panel panel-primary">
         <div class="panel-heading">
           <h1 class="panel-title">Submit Timesheet</h1>
         </div>
-        <form class="form-horizontal">
+        <form class="form-horizontal" name="timeSheetForm" novalidate>
           <div class="panel-body">
             <div class="well">
-              <div class="form-group">
+              <div class="form-group" ng-class="{ 'has-error': timeSheetForm.email.$touched && timeSheetForm.email.$invalid }">
                 <label class="col-sm-1 control-label" for="emailInput">Email:
                 </label>
                 <div class="input-group input-group-lg col-sm-10">
-                  <input aria-describedby="basic-addon2" class="form-control" id="emailInput" ng-model="email" placeholder="artist" type="text">
+                  <input aria-describedby="basic-addon2" class="form-control" id="emailInput" name="email" ng-maxlength="30" ng-minlength="3" ng-model="email" placeholder="artist" required type="text" />
                   <span class="input-group-addon" id="basic-addon2">@gener8.com</span>
+                </div>
+                <div class="help-block" ng-if="timeSheetForm.email.$touched" ng-messages="timeSheetForm.email.$error">
+                  <div ng-messages-include="messages.html"></div>
                 </div>
               </div>
             </div>
@@ -89,19 +95,26 @@
                 <div class="form-group">
                   <label class="control-label col-sm-3">Work Start:</label>
                   <div class="col-sm-4">
-                    <timepicker hour-step="hStartstep" minute-step="mStartstep" ng-change="startTimeChanged()" ng-model="startTime" show-meridian="true"></timepicker>
+                    <timepicker hour-step="hStartstep" minute-step="mStartstep" ng-change="timeChanged()" ng-model="startTime" show-meridian="true"></timepicker>
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="control-label col-sm-3">Work Finish:</label>
                   <div class="col-sm-4">
-                    <timepicker hour-step="hFinishstep" minute-step="mFinishstep" ng-change="finishTimeChanged()" ng-model="finishTime" show-meridian="true"></timepicker>
+                    <timepicker hour-step="hFinishstep" minute-step="mFinishstep" ng-change="timeChanged()" ng-model="finishTime" show-meridian="true"></timepicker>
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="control-label col-sm-3">Time Logged:</label>
-                  <div class="col-sm-8">
-                    <p class="form-control-static"><big>The time that you have selected is: {{displayDateTime}}</big></p>
+                  <div class="col-sm-8" ng-class="{ 'has-error': timeInitalValCheck && timeSheetForm.validateTime.$error }">
+                    <input ng-model="validateTime" name="validateTime" type="time" ng-hide="true" timevalidate/>
+                    <p class="form-control-static">
+                      <big>The time that you have selected is:
+                        {{displayDateTime.display}}</big>
+                    </p>
+                    <div class="help-block" ng-show="timeInitalValCheck" ng-messages="timeSheetForm.validateTime.$error">
+                      <div ng-messages-include="messages.html"></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -123,7 +136,7 @@
               <h4 class="work-type-header">What type of work is this for?</h4>
               <ul class="list-group">
                 <li class="list-group-item" ng-repeat="item in workItems">
-                  <a class="list-group-item" href="" ng-class="{'active': $first}">
+                  <a class="list-group-item" href="" ng-click="selectWorkType(item)" ng-class="{'active': selectedId === item.$$hashKey}">
                     <h4 class="list-group-item-heading">{{item.workType}}</h4>
                     <p class="list-group-item-text">{{item.workItem}}</p>
                   </a>
@@ -139,10 +152,44 @@
             </div>
             <div class="btn-group" role="group"></div>
             <div class="btn-group" role="group">
-              <button class="btn btn-default btn-lg" type="button">Next</button>
+              <button class="btn btn-default btn-lg" ng-click="submitForm()" ng-disabled="timeSheetForm.$invalid || !timeInitalValCheck" type="button">Next</button>
             </div>
           </div>
         </div>
+      </script>
+
+<!-- Submitted View -->
+      <script id="/submitted.html" type="text/ng-template">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h1 class="panel-title">Timesheet Submitted</h1>
+          </div>
+          <div class="panel-body">
+            <div class="well well-lg">
+              <p class="form-control-static">
+                <big>Thank you <strong>{{thankyouMessage}}</strong></big>
+              </p>
+              <p class="form-control-static">
+                <big>{{timeLoggedMessage}}</big>
+              </p>
+            </div>
+          </div>
+          <div class="panel-footer">
+            <div aria-label="..." class="btn-group btn-group-justified" role="group">
+              <div class="btn-group" role="group">
+                <button class="btn btn-default btn-lg" ng-click="resetForm()" type="button">Start Again</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </script>
+
+<!-- Ng Messages -->
+      <script id="messages.html" type="text/ng-template">
+        <p ng-message="minlength">Your email prefix is too short.</p>
+        <p ng-message="maxlength">Your email prefix is too long.</p>
+        <p ng-message="required">Your email prefix is required.</p>
+        <p ng-message="timevalidate">You time logged cannot be zero hours and zero minutes!</p>
       </script>
 
 <!-- load app.js, AngularJS, and dependencies -->
@@ -160,6 +207,9 @@
       <script src="bower_components/ngActivityIndicator/ngActivityIndicator.min.js"></script>
       <script src="app/scripts/app.js"></script>
       <script src="app/scripts/controllers/main.js"></script>
+      <script src="app/scripts/controllers/submitted.js"></script>
       <script src="app/scripts/services/time-service.js"></script>
+      <script src="app/scripts/services/share-data-service.js"></script>
+      <script src="app/scripts/directives/time-log-validators.js"></script>
     </body>
   </html>

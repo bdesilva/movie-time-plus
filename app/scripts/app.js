@@ -16,10 +16,10 @@ angular
         templateUrl: '/main.html',
         controller: 'MainCtrl'
       })
-      // .when('/about', {
-      //   templateUrl: 'views/submitted.html',
-      //   controller: 'AboutCtrl'
-      // })
+      .when('/submitted', {
+        templateUrl: '/submitted.html',
+        controller: 'SubmittedCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });
